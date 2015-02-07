@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mixidea</title>
+    <!-- Bootstrap -->
+    <link href="./lib/css/bootstrap.min.css" rel="stylesheet">
+    <script src="./lib/js/jquery-2.1.1.min.js"></script>
+    <script src="./lib/js/json2.js"></script>
+    <script src="./lib/js/underscore-min.js"></script>
+    <script src="./lib/js/backbone-min.js"></script>
+    <script src="./lib/js/backbone.js"></script>
+    <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.3.0.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js" type="text/javascript"></script>
+
+    <!-- Custom styles for this template -->
+    <link href="./style/sticky-footer-navbar.css" rel="stylesheet">
+
+    <script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1524156424491576',
+      xfbml      : true,
+      version    : 'v2.2'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+  </head>
+  <body>
+
+
+  <div id="header-container"></div>
+
+  <script type="text/template" id="header_logeduser-template">
+   <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Mixidea</a>
+         <div class=" nav  navbar-nav navbar-right" style="text-align:right; margin:0px px 0px 0px" > 
+           <h4>
+            <a id = "loged_user_name"> <%= FirstName %> &nbsp; <%= LastName %> </a>
+           </h4>
+         </div>
+         <div style="text-align:right">
+             <button type="submit" class="btn btn-default" id="Logout">logout</button>
+         </div>
+      </div>
+    </div><!-- /.container-fluid -->
+   </nav>
+  </script>
+
+  <script type="text/template" id="header_login-template">
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Mixidea</a>
+        </div>
+        <div class=" nav navbar-nav navbar-right" style="text-align:right "> 
+             <button type="submit" class="btn btn-default" id="Login">login</button>
+        </div>
+      </div><!-- /.container-fluid -->
+    </nav>
+  </script>
+
+
+
+   <div class="container" style="padding:20px 0">
+      <div id="tab-container"></div>
+      <div class="tab-content">
+        <div id="main-context"></div>
+        <div id="main-additional"></div>
+      </div> 
+    </div>
+
+  <script type="text/template" id="tab-view-template">
+        <ul class="nav nav-tabs" style="margin-bottom:15px;">
+          <li id="first_tab" class="active">
+              <a href="javascript:void(0);" id="content_list_tab" data-toggle="tab">Content</a></li>
+          <li id="second_tab"><a href="javascript:void(0);" id="event_list_tab" data-toggle="tab">Event</a></li>
+        </ul>
+  </script>
+
+  <script type="text/template" id="tab-event-template">
+    <div class="tab-pane active" id="event_list">
+      <div align="right">
+          <a href="javascript:void(0);" id="create_event" class="btn btn-primary btn-middle js-new" >
+            <span class="plyphicon plyphicon-plus"></span>
+            Create New Event
+          </a>
+      </div>
+      event list
+    </div>
+
+    <% for (var i=0; i<event_collection.length; i++){ %>
+      <% var one_event = event_collection[i]; %>
+      <div class="well">
+        <div class="media">
+          <div class="media-body">
+            <h4 class="media-heading"><a href='#EventContext/<%= one_event.objectId %>'><%= one_event.title %></a> </h4>
+            <p class="text-right">nnnnn </p>
+            <p><%= one_event.description %></p>
+            <ul class="list-inline list-unstyled">
+              <li><span><i class="glyphicon glyphicon-calendar"></i> <%= one_event.date %> </span></li>
+                  <li>|</li>
+                  <span><i class="glyphicon glyphicon-comment"></i> 2 participants 3 sheets remained</span>
+                  <li>|</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+  </script>
+
+
+
+  <script type="text/template" id="tab-content-template">
+    <div class="tab-pane active" id="context_list">
+      <div align="right">
+          <a  href="javascript:void(0);" id="create_context" class="btn btn-primary btn-middle js-new">
+            <span class="plyphicon plyphicon-plus"></span>
+            Create New Context
+          </a>
+      </div>
+      <% for (var i=0; i<content_collection.length; i++){ %>
+        <% var one_content = content_collection[i]; %>
+        <div class="well">
+          <div class="media">
+            <a class="pull-left" href="#">
+              <% if(one_content.SpeechPicture){ %>
+                <img class="media-object" src=<%= one_content.SpeechPicture.url %>>
+              <% } %>
+            </a>
+            <div class="media-body">
+              <h4 class="media-heading"><%= one_content.title %> </h4>
+              <p class="text-right"><a href='./profile.html#show_profile/<%= one_content.AuthID %>'>By <%= one_content.AuthFirstName %> <%= one_content.AuthLastName  %></a> </p>
+              <p><%= one_content.description %></p>
+              <ul class="list-inline list-unstyled">
+                <li><span><i class="glyphicon glyphicon-calendar"></i> <%= one_content.createdAt %> </span></li>
+                    <li>|</li>
+                    <span><i class="glyphicon glyphicon-comment"></i> 2 comments</span>
+                    <li>|</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </script>
+
+
+  <script type="text/template" id="one-event-context-template" >
+
+    <p> <h2> event title :  <%= event_object.title %> </h2> </p>
+    <p> <h2> event description :   <%= event_object.description %> </h2> </p>
+
+    <center><span id="hangout_area"></span></center>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Government</th><th>Opposition</th>
+        </tr>
+      </thead>
+      <tbody>
+       <tr>
+
+        <td>
+          <div id = "PM_container">
+           <div class="role"> <p><font-weight: bol>Prime Minister</font-weight></p></div>
+           <div class="participant" style="float:left;">
+              <% if(participant_obj.PM_key) { %>
+                <div class = "image_container" style="float:left; margin-left:5px;">
+                  <img src= <%= participant_obj.PM_key.Profile_picture %> >
+                </div>
+                <div class = "profile_container" style="float:left; margin-left:10px;" >
+                  <a href= ./profijoinle.html#show_profile/<%= participant_obj.PM_key.idid %> > 
+                    <%= participant_obj.PM_key.FirstName %>  <%= participant_obj.PM_key.LastName %>
+                  </a>
+                </div>
+              <% } %>
+           </div>
+           <div class="event_button" style="float:right;margin-right:5px; margin-left:5px;">
+              <% if( !participant_obj.PM_key) { %>
+                <button id="join_PM" class="btn btn-primary"><i class="glyphicon glyphicon-book"></i> Join</button>
+              <% }else{ %>
+                  <% if( participant_obj.PM_key.yourself == true ) { %>
+                    <button id="cancel_PM" class="btn btn-inverse"><i class="glyphicon glyphicon-book"></i> Cancel</button>
+                  <% } %>
+              <% } %>
+           </div>
+           <div class="comment" style="clear:both">
+              <span id="event_PM"></span>
+           </div>
+        </td>
+
+        <td>
+          <div id = "LO_container">
+           <div class="role"> <p><font-weight: bol>Leader Opposition</font-weight></p></div>
+           <div class="participant" style="float:left;">
+              <% if(participant_obj.LO_key) { %>
+                <div class = "image_container" style="float:left; margin-left:5px;">
+                  <img src= <%= participant_obj.LO_key.Profile_picture %> >
+                </div>
+                <div class = "profile_container" style="float:left; margin-left:10px;" >
+                  <a href= ./profile.html#show_profile/<%= participant_obj.LO_key.idid %> > 
+                    <%= participant_obj.LO_key.FirstName %>  <%= participant_obj.LO_key.LastName %>
+                  </a>
+                </div>
+              <% } %>
+           </div>
+           <div class="event_button" style="float:right;margin-right:5px; margin-left:5px;">
+              <% if( !participant_obj.LO_key) { %>
+                <button id="join_LO" class="btn btn-primary"><i class="glyphicon glyphicon-book"></i> Join</button>
+              <% }else{ %>
+                  <% if( participant_obj.LO_key.yourself == true ) { %>
+                    <button id="cancel_LO" class="btn btn-inverse"><i class="glyphicon glyphicon-book"></i> Cancel</button>
+                  <% } %>
+              <% } %>
+           </div>
+           <div class="comment" style="clear:both">
+              <span id="event_LO"></span>
+           </div>
+        </td>
+
+       </tr>
+       <tr>
+
+        <td>
+          <div id = "MG_container">
+           <div class="role"> <p><font-weight: bol>Member Government</font-weight></p></div>
+           <div class="participant" style="float:left;">
+              <% if(participant_obj.MG_key) { %>
+                <div class = "image_container" style="float:left; margin-left:5px;">
+                  <img src= <%= participant_obj.MG_key.Profile_picture %> >
+                </div>
+                <div class = "profile_container" style="float:left; margin-left:10px;" >
+                  <a href= ./profile.html#show_profile/<%= participant_obj.MG_key.idid %> > 
+                    <%= participant_obj.MG_key.FirstName %>  <%= participant_obj.MG_key.LastName %>
+                  </a>
+                </div>
+              <% } %>
+           </div>
+           <div class="event_button" style="float:right;margin-right:5px; margin-left:5px;">
+              <% if( !participant_obj.MG_key) { %>
+                <button id="join_MG" class="btn btn-primary"><i class="glyphicon glyphicon-book"></i> Join</button>
+              <% }else{ %>
+                  <% if( participant_obj.MG_key.yourself == true ) { %>
+                    <button id="cancel_MG" class="btn btn-inverse"><i class="glyphicon glyphicon-book"></i> Cancel</button>
+                  <% } %>
+              <% } %>
+           </div>
+           <div class="comment" style="clear:both">
+              <span id="event_MG"></span>
+           </div>
+        </td>
+
+        <td>
+          <div id = "MO_container">
+           <div class="role"> <p><font-weight: bol>Member Opposition</font-weight></p></div>
+           <div class="participant" style="float:left;">
+              <% if(participant_obj.MO_key) { %>
+                <div class = "image_container" style="float:left; margin-left:5px;">
+                  <img src= <%= participant_obj.MO_key.Profile_picture %> >
+                </div>
+                <div class = "profile_container" style="float:left; margin-left:10px;" >
+                  <a href= ./profile.html#show_profile/<%= participant_obj.MO_key.idid %> > 
+                    <%= participant_obj.MO_key.FirstName %>  <%= participant_obj.MO_key.LastName %>
+                  </a>
+                </div>
+              <% } %>
+           </div>
+           <div class="event_button" style="float:right;margin-right:5px; margin-left:5px;">
+              <% if( !participant_obj.MO_key) { %>
+                <button id="join_MO" class="btn btn-primary"><i class="glyphicon glyphicon-book"></i> Join</button>
+              <% }else{ %>
+                  <% if( participant_obj.MO_key.yourself == true ) { %>
+                    <button id="cancel_MO" class="btn btn-inverse"><i class="glyphicon glyphicon-book"></i> Cancel</button>
+                  <% } %>
+              <% } %>
+           </div>
+           <div class="comment" style="clear:both">
+              <span id="event_MO"></span>
+           </div>
+        </td>
+
+       </tr>
+       <tr>
+
+        <td>
+          <div id = "RPM_container">
+           <div class="role"> <p><font-weight: bol>Prime Minister</font-weight></p></div>
+           <div class="participant" style="float:left;">
+              <% if(participant_obj.RPM_key) { %>
+                <div class = "image_container" style="float:left; margin-left:5px;">
+                  <img src= <%= participant_obj.RPM_key.Profile_picture %> >
+                </div>
+                <div class = "profile_container" style="float:left; margin-left:10px;" >
+                  <a href= ./profile.html#show_profile/<%= participant_obj.RPM_key.idid %> > 
+                    <%= participant_obj.RPM_key.FirstName %>  <%= participant_obj.RPM_key.LastName %>
+                  </a>
+                </div>
+              <% } %>
+           </div>
+           <div class="event_button" style="float:right;margin-right:5px; margin-left:5px;">
+              <% if( !participant_obj.RPM_key) { %>
+                <button id="join_RPM" class="btn btn-primary"><i class="glyphicon glyphicon-book"></i> Join</button>
+              <% }else{ %>
+                  <% if( participant_obj.RPM_key.yourself == true ) { %>
+                    <button id="cancel_RPM" class="btn btn-inverse"><i class="glyphicon glyphicon-book"></i> Cancel</button>
+                  <% } %>
+              <% } %>
+           </div>
+           <div class="comment" style="clear:both">
+              <span id="event_RPM"></span>
+           </div>
+        </td>
+
+        <td>
+          <div id = "LOR_container">
+           <div class="role"> <p><font-weight: bol>Member Opposition</font-weight></p></div>
+           <div class="participant" style="float:left;">
+              <% if(participant_obj.LOR_key) { %>
+                <div class = "image_container" style="float:left; margin-left:5px;">
+                  <img src= <%= participant_obj.LOR_key.Profile_picture %> >
+                </div>
+                <div class = "profile_container" style="float:left; margin-left:10px;" >
+                  <a href= ./profile.html#show_profile/<%= participant_obj.LOR_key.idid %> > 
+                    <%= participant_obj.LOR_key.FirstName %>  <%= participant_obj.LOR_key.LastName %>
+                  </a>
+                </div>
+              <% } %>
+           </div>
+           <div class="event_button" style="float:right;margin-right:5px; margin-left:5px;">
+              <% if( !participant_obj.LOR_key) { %>
+                <button id="join_LOR" class="btn btn-primary"><i class="glyphicon glyphicon-book"></i> Join</button>
+              <% }else{ %>
+                  <% if( participant_obj.LOR_key.yourself == true ) { %>
+                    <button id="cancel_LOR" class="btn btn-inverse"><i class="glyphicon glyphicon-book"></i> Cancel</button>
+                  <% } %>
+              <% } %>
+           </div>
+           <div class="comment" style="clear:both">
+              <span id="event_LOR"></span>
+           </div>
+        </td>
+
+       </tr>
+      </tbody>
+    </table>
+
+    <br>join as a Adjucator<br><br>
+
+    Join as a Audience(does not join in the hangout, just included in your schedule)<br><br>
+
+  </script>
+
+
+
+
+  <script type="text/template" id="event-creation-template" >
+   <form enctype="multipart/form-data">
+    <div class="form-group">
+      <% var EventModel = eventmodel; %>
+      <label for="noteTitle">Event Title</label>
+      <input type="text" id="eventTitle" class="form-control js-noteTitle" value="<%= eventmodel.title  %>">
+    </div>
+    <div class="form-group">
+      <label for="noteBody">Event Description</label>
+      <textarea id="eventDescription" class="form-control js-noteBody" rows="4">
+        <%= eventmodel.description %>
+      </textarea>
+    </div>
+
+    <input type="date" id="event_date" name="date">
+    <input type="time" id="event_start_time" name="time">
+    <input type="number" id="event_duration" name="duration">
+
+    <button type="submit" class="btn btn-default">Submit</button><>
+    <span id="hangout_btn_event_create"><span>
+  </script>
+
+
+
+  <script type="text/template" id="content-creation-template" >
+   <form enctype="multipart/form-data">
+    <div class="form-group">
+      <% var ContentModel = contentmodel; %>
+      <label for="noteTitle">Title</label>
+      <input type="text" id="speechTitle" class="form-control js-noteTitle" value="<%= ContentModel.title  %>">
+    </div>
+    <div class="form-group">
+      <label for="noteBody">Description</label>
+      <textarea id="speechDescription" class="form-control js-noteBody" rows="4">
+        <%= ContentModel.description %>
+      </textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="noteBody">upload Speech file</label>
+      <input type="file" id="file">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </script>
+
+  <div class="footer">
+    <div class="container">
+      vvvvvvvvvvvvvvvvv
+    </div>
+  </div>
+
+     <script type="text/javascript" src="./config/parse_init.js"></script>
+     <script type="text/javascript" src="./model/mixidea_user.js"></script>
+     <script type="text/javascript" src="./model/mixidea_event.js"></script>
+     <script type="text/javascript" src="./model/speech.js"></script>
+     <script type="text/javascript" src="./collection/ContextList.js"></script>
+     <script type="text/javascript" src="./collection/Participants.js"></script>
+     <script type="text/javascript" src="./view/EventContext.js"></script>
+     <script type="text/javascript" src="./view/HeaderView_Login.js"></script>
+     <script type="text/javascript" src="./view/HeaderView_LogedUser.js"></script>
+     <script type="text/javascript" src="./view/ContentListView.js"></script>
+     <script type="text/javascript" src="./view/EventListView.js"></script>
+     <script type="text/javascript" src="./view/ContentCreationView.js"></script>
+     <script type="text/javascript" src="./view/EventCreationView.js"></script>
+     <script type="text/javascript" src="./view/TabView.js"></script>
+
+     <script type="text/javascript" src="./util/logout.js"></script>
+     <script type="text/javascript" src="./util/hangout_util.js"></script>
+     <script type="text/javascript" src="./util/login.js"></script>
+     <script type="text/javascript" src="./util/click_create_context.js"></script>
+     <script type="text/javascript" src="./router/router.js"></script>
+     <script type="text/javascript" src="./util/click_content_list.js"></script>
+     <script type="text/javascript" src="./util/click_event_list.js"></script>
+     <script type="text/javascript" src="./app.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+     <script src="./lib/js/bootstrap.min.js"></script>
+    
+  </body>
+</html>
