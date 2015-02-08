@@ -1,4 +1,6 @@
-  Parse.initialize("wxaNxdtmCOUJm8QHPYr8khYkFJiBTMvEnv1jCDZg", "OuSaCarL4ltnPsuwptJMBvoZ7v3071MCUE7Y5MfD");
+
+  <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.3.4.min.js"></script>
+  Parse.initialize("rc8Zz9FHNj4FVgabkbjRPbPrlLXQQpoL9NRrI7FZ", "fYVcXHYQqvSLRMmRQ274PEmmUfj5OnwTHrRwXlNm");
   var config_hangout_app_id_Registration = "78395705464";
   var config_hangout_app_id_Debate_NA = "78395705464";
   var config_hangout_app_id_Debate_BP = "78395705464";
@@ -7,5 +9,6 @@
   var config_hangout_app_id_Discussion = "78395705464";
   var config_hangout_app_id = "172012775158";
   var default_hangout_url = "https://plus.google.com/hangouts/_";
+  var facebook_app_id = "1524156424491576";
   console.log("parse init");
 
