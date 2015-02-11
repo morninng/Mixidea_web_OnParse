@@ -43,7 +43,7 @@
       var query = new Parse.Query(MixideaEvent);
       query.get(id, {
         success: function(event_obj) {
-          var event_context = new EventContext({
+          var event_context = new EventContext_DebeteNA({
             el: '#main-context',
             model: event_obj
           });

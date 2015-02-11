@@ -1,10 +1,12 @@
 
-var Parse_Role_Name = ["PrimeMinister","LeaderOpposition","MemberGovernment","MemberOpposition","ReplyPM","LOReply" ];
+var Parse_Role_Name = ["PrimeMinister","LeaderOpposition","MemberGovernment","MemberOpposition","ReplyPM","LOReply","Audience1","Audience2","Audience3","Audience4" ];
 var event_span_name = ["#event_PM","#event_LO","#event_MG","#event_MO","#event_RPM","#event_LOR"];
-var Debate_Role_name = [  "Prime Minister", "Leader Opposition", "Member Government", "Member Opposition", "eply Prime Minister", "Leader Opposition Reply"];
-var Join_btn_id = ["join_PM","join_LO","join_MG","join_MO","join_RPM","join_LOR"];
-var Cancel_btn_id = ["cancel_PM","cancel_LO","cancel_MG","cancel_MO","cancel_RPM","cancel_LOR"];
+var Debate_Role_name = [  "Prime Minister", "Leader Opposition", "Member Government", "Member Opposition", "eply Prime Minister", "Leader Opposition Reply","Audience","Audience","Audience","Audience"];
+var Join_btn_id = ["join_PM","join_LO","join_MG","join_MO","join_RPM","join_LOR","join_Audience"];
+var Cancel_btn_id = ["cancel_PM","cancel_LO","cancel_MG","cancel_MO","cancel_RPM","cancel_LOR","cancel_Audience"];
 var Role_Container = ["#PM_container","#LO_container","#MG_container","#MO_container","#RPM_container","#LOR_container"];
+var Participant_Group = ["Proposition", "Opposition", "Audience"];
+var Participant_Role_Group = ["Proposition", "Opposition","Proposition", "Opposition","Proposition", "Opposition","Audience","Audience","Audience","Audience","Audience","Audience","Audience","Audience"];
 
 
 function Put_CurrentUser_Profile(num_role){
@@ -63,6 +65,12 @@ function Regist_Failure_Message(num_role){
 function Click_Participate_button( event_object, num_role){
 	console.log("participate as " + Debate_Role_name[num_role]);
 
+
+	if(self.group && self.group !=  Participant_Role_Group[num_role]){
+		alert("you can have multiple role only in your team");
+		return;
+	}
+
 	var currentUser = Parse.User.current();
 	event_object.fetch().then(function(event_obj){
 		if(event_obj.get(Parse_Role_Name[num_role])){
@@ -77,6 +85,8 @@ function Click_Participate_button( event_object, num_role){
 					Regist_Success_Message(num_role);
 					Set_Cancel_Button(num_role);
 					Put_CurrentUser_Profile(num_role);
+					self.group =  Participant_Role_Group[num_role];
+					self.number_of_your_role++;
 				},
 				error: function(){
 					alert("registration has been failed due to the network problem");
@@ -100,18 +110,27 @@ function Click_Cancel_button( event_object, num_role){
 				Cancel_Success_Message(num_role);
 				Set_Join_Button(num_role);
 				Remove_CurrentUser_Profile(num_role);
+
+				self.number_of_your_role--;
+				if(self.number_of_your_role < 1){
+					self.group = null;
+				}
+
 			});
 		}
 }
 
-var EventContext = Backbone.View.extend({
+var EventContext_DebeteNA = Backbone.View.extend({
 
-	template: _.template( $('#one-event-context-template').html()),
+	template: _.template( $('#one-event-context-template_NA').html()),
 
 	initialize:  function(options){
 		self=this;
 
 		var hangout_url = self.model.get("hangout_url");
+		self.group = null;
+		self.number_of_your_role = 0;
+
 		console.log(hangout_url);
 		self.showEvent();
 		self.isHangoutButton = false;
@@ -183,36 +202,43 @@ var EventContext = Backbone.View.extend({
 
 		var participants = [];
 		var participant_role = [];
+		var participant_group = [];
 
 		var PM_object = self.model.get("PrimeMinister");
 		if(PM_object){
 			participants.push(PM_object);
 			participant_role.push("PM_key");
+			participant_group.push("Proposition");
 		}
 		var LO_object = self.model.get("LeaderOpposition");
 		if(LO_object){
 			participants.push(LO_object);
 			participant_role.push("LO_key");
+			participant_group.push("Opposition");
 		}
 		var MG_object = self.model.get("MemberGovernment");
 		if(MG_object){
 			participants.push(MG_object);
 			participant_role.push("MG_key");
+			participant_group.push("Proposition");
 		}
 		var MO_object = self.model.get("MemberOpposition");
 		if(MO_object){
 			participants.push(MO_object);
 			participant_role.push("MO_key");
+			participant_group.push("Opposition");
 		}
 		var PMR_object = self.model.get("ReplyPM");
 		if(PMR_object){
 			participants.push(PMR_object);
 			participant_role.push("RPM_key");
+			participant_group.push("Proposition");
 		}
 		var LOR_object = self.model.get("LOReply");
 		if(LOR_object){
 			participants.push(LOR_object);
 			participant_role.push("LOR_key");
+			participant_group.push("Opposition");
 		}
 
 		var participants_collection = new ParticipantsCollection();
@@ -231,6 +257,9 @@ var EventContext = Backbone.View.extend({
 						if (currentUser.id == participant_o[0].id){
 							yourself = true;
 							self.my_participation = true;
+							self.group = participant_group[i];
+							self.number_of_your_role++;
+
 						}else{
 							yourself = false;
 						}
