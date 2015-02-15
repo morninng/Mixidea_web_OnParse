@@ -39,7 +39,6 @@
       });
     },
     ShowEventContext: function(id) {
-
       var query = new Parse.Query(MixideaEvent);
       query.get(id, {
         success: function(event_obj) {

@@ -170,7 +170,7 @@
     <p> <h3><strong> event description: </strong>   <%= event_object.description %> </h3> </p>
 
     <center><span id="hangout_area"></span></center>
-
+    <h3>Join as a debater</h3>
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -359,16 +359,44 @@
               <span id="event_LOR"></span>
            </div>
         </td>
-
        </tr>
       </tbody>
     </table>
 
-    <br>join as a Adjucator<br><br>
+    <br><h3>Join as an Audience</h3>
 
-    Join as a Audience(does not join in the hangout, just included in your schedule)<br><br>
+
+     <div id="audiencd_button_container" class="event_button" style="float:left;margin-right:5px; margin-left:5px;">
+        <% if( audience_yourself == true ) { %>
+          <button id="cancel_Audience" class="btn btn-inverse"><i class="glyphicon glyphicon-book"></i> Cancel</button>
+        <% } %>
+
+        <% if( audience_yourself == false && audience_remained_sheet>0) { %>
+          <button id="join_Audience" class="btn btn-primary"><i class="glyphicon glyphicon-book"></i> Join</button>
+        <% }else{ %>
+
+        <% } %>
+     </div>
+     <br>
+ 
+
+
+    <% for(j=0;j<audience_obj_property.length;j++){ %>
+
+           <div style="float:left; border:1px solid; margin: 5px; padding: 5px">
+              <div class = "image_container" style="float:left; margin-left:5px;">
+                <img src= <%= audience_obj_property[j].Profile_picture %> >
+              </div>
+              <div class = "profile_container" style="float:left; margin-left:10px;" >
+                <a href= ./profile.html#show_profile/<%= audience_obj_property[j].idid %> > 
+                  <%= audience_obj_property[j].FirstName %>  <%= audience_obj_property[j].LastName %>
+                </a>
+              </div>
+           </div>
+    <% } %>
 
   </script>
+
 
 
 
